@@ -1,0 +1,13 @@
+<!-- templates/logout.html -->
+{% extends 'base.html' %}
+
+{% block title %}Logout{% endblock %}
+
+{% block content %}
+  <p>You have been successfully logged out. Redirecting to the homepage...</p>
+  <script>
+    setTimeout(function() {
+      window.location.href = "{% url 'index' %}";
+    }, 2000);  <!-- Redirect after 2 seconds (adjust as needed) -->
+  </script>
+{% endblock %}
