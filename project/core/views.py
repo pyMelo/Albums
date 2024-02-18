@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .forms import SignupForm, LoginForm
 from django.contrib.auth import logout,login
 from django.contrib.auth.views import LogoutView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.contrib.auth.forms import AuthenticationForm
