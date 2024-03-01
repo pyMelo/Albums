@@ -1,10 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
-from django.http import JsonResponse
-import jwt
-
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
@@ -15,8 +11,6 @@ class LoginForm(AuthenticationForm):
         'placeholder': 'Your password',
         'class': 'w-full py-4 px-6 rounded-xl'
     }))
-    
-    
 
 class SignupForm(UserCreationForm):
     class Meta:

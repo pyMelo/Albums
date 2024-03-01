@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 
+from item.models import Category, Item
+
 from .forms import SignupForm, LoginForm
 from django.contrib.auth import logout,login
 from django.contrib.auth.views import LogoutView
@@ -8,11 +10,20 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.contrib.auth.forms import AuthenticationForm
 from django.views import View
-
 import jwt
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse_lazy
+from django.shortcuts import render
+from django.http import HttpResponse
 
 def index(request):
-    return render(request, 'core/index.html')
+    items = Item.objects.all()[:6]
+    categories = Category.objects.all()
+
+    return render(request, 'core/index.html', {
+        'categories': categories,
+        'items': items,
+    })
 
 def contact(request):
     return render(request, 'core/contact.html')
@@ -52,8 +63,6 @@ def login_view(request):
 
         if form.is_valid():
             login(request, form.get_user())
-
-            # Generate JWT token and set it in the cookies
             user = form.get_user()
             expiration_time = datetime.utcnow() + timedelta(days=1)
             
@@ -70,3 +79,13 @@ def login_view(request):
             return response
 
         return render(request, template_name, {'form': form})
+def error_response(request, code=200, message='Default message'):
+    template = 'core/blurred_page.html'
+
+    if code != 200:
+        # If there's an error, render the error response
+        template = 'core/error_response.html'
+
+    context = {'code': code, 'message': message}
+    return render(request, template, context)
+

@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-5 gap-6">
+    <div class="col-span-3">
+        <img src="{{ item.image.url }}" class="rounded-xl">
+    </div>
+
+    <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
+        <h1 class="mb-6 text-3xl">{{ item.name }}</h1>
+        <p class="text-gray-500"><strong>Author: </strong>{{ item.created_by.username }}</p>
+    
+        {% if item.description %}
+            <p class="text-gray-700">
+                <strong class="text-gray-500">Description:</strong><br>
+                {{ item.description }}
+            </p>
+        {% endif %}
+        {% if user_rating %}
+            {% include 'item/rating_submitted.html' %}
+            <script>
+                // Display the modal when the page loads
+                document.getElementById('ratingAlreadySubmittedModal').style.display = 'block';
+            </script>
+        {% endif %}
+
+        <p class="mt-2">
+            Total Ratings:
+            {% for i in "12345"|make_list %}
+                {% if i|add:0 <= ratings.count %}
+                    <i class="fas fa-star text-yellow-500"></i>
+                {% else %}
+                    <i class="far fa-star text-gray-500"></i>
+                {% endif %}
+            {% endfor %}
+            ({{ ratings.count }})
+            {% if average_rating is not None %}
+                Average Rating:
+                {% for i in "1234"|make_list %}
+                    {% if i|add:0 <= average_rating %}
+                        <i class="fas fa-star text-yellow-500"></i>
+                    {% else %}
+                        <i class="far fa-star text-gray-500"></i>
+                    {% endif %}
+                {% endfor %}
+                {% if average_rating %}{{ average_rating }}{% endif %}
+            {% else %}
+                No ratings yet.
+            {% endif %}
+        </p>
+
+        <!-- Conditionally show rating form -->
+        {% if request.user != item.created_by %}
+            <h3 class="mt-4">Submit Your Rating:</h3>
+            <form method="post" action="">
+                {% csrf_token %}
+                {{ rating_form.as_p }}
+                <button type="submit" class="px-4 py-2 rounded-full bg-teal-500 text-white hover:bg-teal-600 mt-2">Submit Rating</button>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+    <h2 class="mb-12 text-2xl text-center">Related items</h2>
+
+    <div class="grid grid-cols-3 gap-3">
+        {% for related_item in related_items %}
+            <div>
+                <a href="{% url 'item:detail' related_item.id %}">
+                    <div>
+                        <img src="{{ related_item.image.url }}" class="rounded-t-xl">
+                    </div>
+
+                    <div class="p-6 bg-white rounded-b-xl">
+                        <h2 class="text-2xl">{{ related_item.name }}</h2>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

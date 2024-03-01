@@ -6,14 +6,21 @@ import jwt
 import logging
 from django.http import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from django.conf import settings
 
-# Initialize logger
+from django.shortcuts import render
+
+BLURRED_HTML_PATH = 'blurred_page'  # Assuming you have a URL pattern named 'blurred_page'
+
 logger = logging.getLogger(__name__)
 
 # Get JWT secret key
+
 SECRET_KEY = '259fabc6e7b379d1babad0eb3b8ed8a14c3ccfed5acf7d93c81f1add36f7626f'
 
-EXCEPTION_URLS = ['/', '/login/','/signup/','/logout/']
+EXCEPTION_URLS = ['/','/login/','/signup/','/logout/','/password_reset/']
 
 def create_response(request_id, code, message):
 
@@ -22,7 +29,7 @@ def create_response(request_id, code, message):
     :param request_id:Id fo the request
     :param code:Error Code to be used
     :param message:Message to be sent via the APi
-    :return:Dict with the above given params
+    :return:Dict withgoogle-chrome-stable --user-data-dir=/tmp/chrome-guest the above given params
     """
 
     try:
@@ -56,28 +63,35 @@ class CustomMiddleware(MiddlewareMixin):
             return None
         if request.path.startswith('/admin'):
             return None
-        # If token Exists
+        if request.path.startswith('/password_reset'):
+            return None
+        if request.path.startswith(settings.MEDIA_URL):
+            return None
         print('Token do not exists')
         if jwt_token:
-            print('Token exists but..')
-
             try:
                 payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
                 username = payload['username']
-                print(f"Decoded JWT payload: username - {username}")
                 logger.info(f"Request received from user - {username}")
                 return None
             except jwt.ExpiredSignatureError:
-                response = create_response("", 4001, {"message": "Authentication token has expired"})
-                logger.info(f"Response {response}")
-                return HttpResponse(json.dumps(response), status=401)
+                response = render(
+                    request,
+                    'core/error_response.html',
+                    {'code': 401, 'message': 'Token has expired. '}
+                )
+                return HttpResponse(response,status=401)
             except (jwt.DecodeError, jwt.InvalidTokenError):
-                response = create_response("", 4001, {"message": "Authorization has failed, Please send valid token."})
-                logger.info(f"Response {response}")
-                return HttpResponse(json.dumps(response), status=401)
+                response = render(
+                    request,
+                    'core/error_response.html',
+                    {'code': 401, 'message': 'Authorization has failed. Please send a valid token.'}
+                )
+                return HttpResponse(response, status=401)
         else:
-            response = create_response(
-                "", 4001, {"message": "Authorization not found, Please send valid token in headers"}
+            response = render(
+                request,
+                'core/error_response.html',
+                {'code': 401, 'message': 'Authorization not found. Please send a valid token in headers.'}
             )
-            logger.info(f"Response {response}")
-            return HttpResponse(json.dumps(response), status=401)
+            return HttpResponse(response, status=401)
