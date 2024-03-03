@@ -14,6 +14,7 @@
         <h1 class="mb-6 text-3xl">{{ item.name }}</h1>
         <p class="text-gray-500"><strong>Author: </strong>{{ item.created_by.username }}</p>
     
+        
         {% if item.description %}
             <p class="text-gray-700">
                 <strong class="text-gray-500">Description:</strong><br>
@@ -30,37 +31,28 @@
 
         <p class="mt-2">
             Total Ratings:
-            {% for i in "12345"|make_list %}
-                {% if i|add:0 <= ratings.count %}
-                    <i class="fas fa-star text-yellow-500"></i>
-                {% else %}
-                    <i class="far fa-star text-gray-500"></i>
-                {% endif %}
-            {% endfor %}
             ({{ ratings.count }})
             {% if average_rating is not None %}
                 Average Rating:
-                {% for i in "1234"|make_list %}
-                    {% if i|add:0 <= average_rating %}
-                        <i class="fas fa-star text-yellow-500"></i>
-                    {% else %}
-                        <i class="far fa-star text-gray-500"></i>
-                    {% endif %}
-                {% endfor %}
                 {% if average_rating %}{{ average_rating }}{% endif %}
             {% else %}
                 No ratings yet.
             {% endif %}
         </p>
+        
 
         <!-- Conditionally show rating form -->
         {% if request.user != item.created_by %}
-            <h3 class="mt-4">Submit Your Rating:</h3>
-            <form method="post" action="">
-                {% csrf_token %}
-                {{ rating_form.as_p }}
-                <button type="submit" class="px-4 py-2 rounded-full bg-teal-500 text-white hover:bg-teal-600 mt-2">Submit Rating</button>
-            </form>
+            {%if user_rating %}
+                <p>You already submitted</p>
+            {%else%}
+                <h3 class="mt-4">Submit Your Rating:</h3>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    {{ rating_form.as_p }}
+                    <button type="submit" class="px-4 py-2 rounded-full bg-teal-500 text-white hover:bg-teal-600 mt-2">Submit Rating</button>
+                </form>
+            {% endif %}
         {% endif %}
 
     </div>
@@ -85,4 +77,5 @@
         {% endfor %}
     </div>
 </div>
+
 {% endblock %}

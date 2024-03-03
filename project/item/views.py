@@ -20,18 +20,6 @@ def items(request):
     if query:
         items = items.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
-    items_per_page = 3
-    
-    paginator = Paginator(items,items_per_page)
-    page = request.GET.get('page')
-    
-    try:
-        paginated_items = paginator.page(page)
-    except PageNotAnInteger:
-        paginated_items = paginator.page(1)
-        
-    except EmptyPage:
-        paginated_items=paginator.page(paginator.num_pages) 
     return render(request, 'item/items.html', {
         'items': items,
         'query': query,
@@ -44,11 +32,27 @@ def detail(request, pk):
     related_items = Item.objects.filter(category=item.category).exclude(pk=pk)[:3]
     ratings = Rating.objects.filter(item=item)
     
+    recently_viewed = request.session.get('recently_viewed',[])
+    
+    if pk not in recently_viewed:
+        recently_viewed.append(pk)
+    recently_viewed = recently_viewed[-3:]
+    request.session['recently_viewed'] = recently_viewed
+    
+    
+    ###
+    recently_items = Item.objects.filter(id__in=recently_viewed).exclude(pk=pk)[:3]
+    
+    print(f'recently_items{recently_items}')
+    
     if ratings:
-        average_rating = sum(rating.value for rating in ratings) / len(ratings)
+        average_rating = round(sum(rating.value for rating in ratings) / len(ratings), 2)
     else:
         average_rating = None
+        
     user_rating = Rating.objects.filter(item=item,rated_by=request.user).first()
+    
+
     if request.method == 'POST':
         
         if user_rating:
@@ -70,6 +74,7 @@ def detail(request, pk):
         'ratings': ratings,
         'average_rating': average_rating,
         'rating_form': rating_form,
+        'recently_items': recently_items,
     })
 
 @login_required

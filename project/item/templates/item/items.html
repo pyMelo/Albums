@@ -3,6 +3,19 @@
 {% block title %}Items{% endblock %}
 
 {% block content %}
+<head>
+    <script>
+        // This script will scroll the page to the top after a short delay
+        document.addEventListener("DOMContentLoaded", function() {
+            // Introduce a delay of 100 milliseconds before scrolling to the top
+            setTimeout(function() {
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
+            }, 50);
+        });
+    </script>
+</head>
+
     <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
         <div class="col-span-1">
             <form method="get" action="{% url 'item:items' %}">
@@ -47,29 +60,6 @@
                     </div>
                 {% endfor %}
             </div>
-        
-            <!-- Display pagination links -->
-            <!-- Display your items as before -->
-
-<!-- Pagination controls -->
-<div class="pagination">
-    <span class="step-links">
-        {% if items.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ items.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ items.number }} of {{ items.paginator.num_pages }}.
-        </span>
-
-        {% if items.has_next %}
-            <a href="?page={{ items.next_page_number }}">next</a>
-            <a href="?page={{ items.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-
         </div>
-        
+    </div>
 {% endblock %}

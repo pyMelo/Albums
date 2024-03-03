@@ -15,9 +15,11 @@
 function closeModal() {
   var modal = document.getElementById('ratingAlreadySubmittedModal');
   modal.style.display = 'none';
+  window.location.href = '/';  // Replace '/' with the URL of your homepage
+
 }
 
 // Automatically close the modal after a few seconds (adjust as needed)
-setTimeout(closeModal, 5000);
+setTimeout(closeModal, 1000);
 </script>
 {% endblock %}

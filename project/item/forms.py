@@ -40,15 +40,13 @@ class EditItemForm(forms.ModelForm):
         }
     
     
+from django import forms
+from .models import Rating
+
 class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
         fields = ['value']
         widgets = {
-            'value': forms.NumberInput(attrs={
-                'class': INPUT_CLASSES,  # Add your custom styling class
-                'type': 'number',  # Set the input type to 'number'
-                'min': 1,  # Optionally set a minimum value
-                'max': 5,  # Optionally set a maximum value
-            }),
+            'value': forms.RadioSelect(choices=[(1, '1 star'), (2, '2 stars'), (3, '3 stars'), (4, '4 stars'), (5, '5 stars')],),  # Add your custom styling class
         }
