@@ -1,10 +1,27 @@
 {% extends 'core/base.html' %}
 
-{% load static %}
 
 {% block title %}{{ item.name }}{% endblock %}
 
 {% block content %}
+<head>
+    <style>
+        /* Styles for the modal */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow for a slight border */
+            z-index: 1000; /* Ensure it's above the blurred background */
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+
 <div class="grid grid-cols-5 gap-6">
     <div class="col-span-3">
         <img src="{{ item.image.url }}" class="rounded-xl">
@@ -21,13 +38,7 @@
                 {{ item.description }}
             </p>
         {% endif %}
-        {% if user_rating %}
-            {% include 'item/rating_submitted.html' %}
-            <script>
-                // Display the modal when the page loads
-                document.getElementById('ratingAlreadySubmittedModal').style.display = 'block';
-            </script>
-        {% endif %}
+
 
         <p class="mt-2">
             Total Ratings:
@@ -39,12 +50,11 @@
                 No ratings yet.
             {% endif %}
         </p>
-        
 
         <!-- Conditionally show rating form -->
         {% if request.user != item.created_by %}
-            {%if user_rating %}
-                <p>You already submitted</p>
+            {% if user_rating %}
+                <p>You already submitted your rating</p>
             {%else%}
                 <h3 class="mt-4">Submit Your Rating:</h3>
                 <form method="post" action="">
@@ -52,6 +62,26 @@
                     {{ rating_form.as_p }}
                     <button type="submit" class="px-4 py-2 rounded-full bg-teal-500 text-white hover:bg-teal-600 mt-2">Submit Rating</button>
                 </form>
+                {% if form_submitted %}
+                    <div>
+                        <div id="vote-submitted-modal" class="modal">
+                            <div>
+                                <p>Thanks for your vote</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // Show the custom modal for vote submitted
+                        document.getElementById('vote-submitted-modal').style.display = 'block';
+
+                        // Refresh the page after a short delay (adjust the delay as needed)
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000); // 2000 milliseconds (2 seconds) delay in this example
+                    </script>
+                {% endif %}
+
             {% endif %}
         {% endif %}
 

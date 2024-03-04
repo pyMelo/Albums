@@ -50,23 +50,22 @@ def detail(request, pk):
     else:
         average_rating = None
         
-    user_rating = Rating.objects.filter(item=item,rated_by=request.user).first()
+    user_rating = Rating.objects.filter(item=item, rated_by=request.user).first()
     
 
     if request.method == 'POST':
         
-        if user_rating:
-            return render(request,'item/rating_submitted.html')
-        else:
-            rating_form=RatingForm(request.POST)
+        rating_form=RatingForm(request.POST)
             
         if rating_form.is_valid():
             rating = rating_form.save(commit=False)
             rating.item = item
             rating.rated_by = request.user
+            form_submitted = True 
             rating.save()
     else:
         rating_form = RatingForm()
+        form_submitted = False
         
     return render(request, 'item/detail.html', {
         'item': item,
@@ -75,6 +74,8 @@ def detail(request, pk):
         'average_rating': average_rating,
         'rating_form': rating_form,
         'recently_items': recently_items,
+        'user_rating':user_rating,
+        'form_submitted': form_submitted
     })
 
 @login_required
