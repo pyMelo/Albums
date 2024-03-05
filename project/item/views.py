@@ -14,11 +14,13 @@ def items(request):
     items = Item.objects.filter()
     
     
+    
     if category_id:
         items = items.filter(category_id=category_id)
 
     if query:
         items = items.filter(Q(name__icontains=query) | Q(description__icontains=query))
+    print(f'Session Data: {request.session.get("recently_viewed", [])}')
 
     return render(request, 'item/items.html', {
         'items': items,
@@ -27,24 +29,43 @@ def items(request):
         'category_id': int(category_id)
     })
 
+def recently_viewed( request, pk ):
+    print('Entered in the recently_viewed')
+
+    if not "recently_viewed" in request.session:
+        request.session["recently_viewed"] = []
+        request.session["recently_viewed"].append(pk)
+    else:
+        if pk in request.session["recently_viewed"]:
+            request.session["recently_viewed"].remove(pk)
+        request.session["recently_viewed"].insert(0, pk)
+        if len(request.session["recently_viewed"]) > 5:
+            request.session["recently_viewed"].pop()
+    request.session.modified =True
+
+
 def detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
     related_items = Item.objects.filter(category=item.category).exclude(pk=pk)[:3]
     ratings = Rating.objects.filter(item=item)
     
-    recently_viewed = request.session.get('recently_viewed',[])
+    recently_viewed(request,pk)
+    recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", [])).exclude(pk=pk)[:3]
+
+    #recently_viewed = request.session.get('recently_viewed',[])
+
+
+    #if pk not in recently_viewed:
+    #    recently_viewed.append(pk)
+    #recently_viewed = recently_viewed[-3:]
+    #request.session['recently_viewed'] = recently_viewed
+    #print(request.session['recently_viewed'])
     
-    if pk not in recently_viewed:
-        recently_viewed.append(pk)
-    recently_viewed = recently_viewed[-3:]
-    request.session['recently_viewed'] = recently_viewed
     
     
-    ###
-    recently_items = Item.objects.filter(id__in=recently_viewed).exclude(pk=pk)[:3]
-    
-    print(f'recently_items{recently_items}')
-    
+    #recently_items = Item.objects.filter(id__in=recently_viewed)
+    #print(f'recently_items{recently_items}')
+
     if ratings:
         average_rating = round(sum(rating.value for rating in ratings) / len(ratings), 2)
     else:
@@ -54,7 +75,7 @@ def detail(request, pk):
     
 
     if request.method == 'POST':
-        
+        print('Entered in the POST method')
         rating_form=RatingForm(request.POST)
             
         if rating_form.is_valid():
@@ -67,15 +88,18 @@ def detail(request, pk):
         rating_form = RatingForm()
         form_submitted = False
         
+    print(f'recently viewed qs {recently_viewed_qs}')
+    
     return render(request, 'item/detail.html', {
         'item': item,
         'related_items': related_items,
         'ratings': ratings,
         'average_rating': average_rating,
         'rating_form': rating_form,
-        'recently_items': recently_items,
+        'recently_viewed': recently_viewed_qs,
+        #'recently_items': recently_items,
         'user_rating':user_rating,
-        'form_submitted': form_submitted
+        'form_submitted': form_submitted,
     })
 
 @login_required
