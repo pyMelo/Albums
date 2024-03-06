@@ -29,29 +29,27 @@
         <h2 class="mb-12 text-2xl text-center">Recently Viewed Items</h2>
         
         <div class="grid grid-cols-3 gap-3">
-            {% if recently_viewed %}
-                {% for item in recently_viewed_qs %}
+        <p>Debug: {{ recently_viewed_qs }}</p>
+
+            {% if recently_viewed_qs %}
+                <p>Queryset is not empty </p>
+                {% for recently_viewed_q in recently_viewed_qs %}
                     <div>
-                        <a href="{% url 'item:detail' item.id %}">
+                        <a href="{% url 'item:detail' recently_viewed_q.id %}">
                             <div>
-                                <img src="{{ item.image.url }}" class="rounded-t-xl">
+                                <img src="{{ recently_viewed_q.image.url }}" class="rounded-t-xl">
                             </div>
         
                             <div class="p-6 bg-white rounded-b-xl">
-                                <h2 class="text-2xl">{{ item.name }}</h2>
+                                <h2 class="text-2xl">{{ recently_viewed_q.name }}</h2>
                             </div>
                         </a>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>No recently viewed items.</p>
+                <p>Queryset is empty </p>
             {% endif %}
         </div>
         
     </div>
 {% endblock %}
-<script>
-    console.log(recently_viewed)
-    console.log(recently_viewed_qs)
-
-</script>

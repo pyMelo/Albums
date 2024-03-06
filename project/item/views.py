@@ -26,7 +26,7 @@ def items(request):
         'items': items,
         'query': query,
         'categories': categories,
-        'category_id': int(category_id)
+        'category_id': int(category_id),
     })
 
 def recently_viewed( request, pk ):
@@ -50,7 +50,8 @@ def detail(request, pk):
     ratings = Rating.objects.filter(item=item)
     
     recently_viewed(request,pk)
-    recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", [])).exclude(pk=pk)[:3]
+    print(Item.pk)
+    recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", []))[:3]
 
     #recently_viewed = request.session.get('recently_viewed',[])
 
@@ -73,7 +74,7 @@ def detail(request, pk):
         
     user_rating = Rating.objects.filter(item=item, rated_by=request.user).first()
     
-
+    print(f'related_items : {related_items}')
     if request.method == 'POST':
         print('Entered in the POST method')
         rating_form=RatingForm(request.POST)
@@ -89,6 +90,9 @@ def detail(request, pk):
         form_submitted = False
         
     print(f'recently viewed qs {recently_viewed_qs}')
+    print(f'recently_viewed_qs: {recently_viewed_qs}')
+    print(f'request.session["recently_viewed"]: {request.session.get("recently_viewed", [])}')
+
     
     return render(request, 'item/detail.html', {
         'item': item,
@@ -97,7 +101,6 @@ def detail(request, pk):
         'average_rating': average_rating,
         'rating_form': rating_form,
         'recently_viewed': recently_viewed_qs,
-        #'recently_items': recently_items,
         'user_rating':user_rating,
         'form_submitted': form_submitted,
     })
