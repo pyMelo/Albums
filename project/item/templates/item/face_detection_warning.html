@@ -1,0 +1,15 @@
+<!-- item/face_detection_warning.html -->
+{% extends 'core/base.html' %}
+
+{% block title %}Face Detection Warning{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Warning</h1>
+    <p class="mb-4">{{ warning_message }}</p>
+    
+    <!-- You can add additional content or styling as needed -->
+
+    <a href="{% url 'item:new' %}" class="py-2 px-4 bg-teal-500 hover:bg-teal-700 text-white rounded-lg">Go back</a>
+</div>
+{% endblock %}

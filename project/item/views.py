@@ -2,6 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q,Avg
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+
+import cv2
+import numpy as np
 
 
 from .forms import NewItemForm, EditItemForm, RatingForm
@@ -29,6 +33,44 @@ def items(request):
         'category_id': int(category_id),
     })
 
+@login_required
+def new(request):
+    if request.method == 'POST':
+        form = NewItemForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            item = form.save(commit=False)
+
+            # Check if the uploaded image contains a face
+            image = request.FILES['image'].read()
+            numpy_array = np.frombuffer(image, np.uint8)
+            cv_image = cv2.imdecode(numpy_array, cv2.IMREAD_COLOR)
+            gray_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+            
+            face_classifier = cv2.CascadeClassifier(
+                cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+            )
+            faces = face_classifier.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+
+            if len(faces) > 0:
+                message = 'Face detected in the uploaded image. You cannot upload images with faces.'
+                return render(request, 'item/face_detection_warning.html', {
+                'warning_message': message,
+                })
+            else:
+                # No faces detected, save the item
+                item.created_by = request.user
+                item.save()
+                return redirect('item:detail', pk=item.id)
+    else:
+        form = NewItemForm()
+
+    return render(request, 'item/form.html', {
+        'form': form,
+        'title': 'New item',
+    })
+
+
 def recently_viewed( request, pk ):
     print('Entered in the recently_viewed')
 
@@ -52,20 +94,6 @@ def detail(request, pk):
     recently_viewed(request,pk)
     print(Item.pk)
     recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", []))[:3]
-
-    #recently_viewed = request.session.get('recently_viewed',[])
-
-
-    #if pk not in recently_viewed:
-    #    recently_viewed.append(pk)
-    #recently_viewed = recently_viewed[-3:]
-    #request.session['recently_viewed'] = recently_viewed
-    #print(request.session['recently_viewed'])
-    
-    
-    
-    #recently_items = Item.objects.filter(id__in=recently_viewed)
-    #print(f'recently_items{recently_items}')
 
     if ratings:
         average_rating = round(sum(rating.value for rating in ratings) / len(ratings), 2)
@@ -105,24 +133,7 @@ def detail(request, pk):
         'form_submitted': form_submitted,
     })
 
-@login_required
-def new(request):
-    if request.method == 'POST':
-        form = NewItemForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            item = form.save(commit=False)
-            item.created_by = request.user
-            item.save()
-
-            return redirect('item:detail', pk=item.id)
-    else:
-        form = NewItemForm()
-
-    return render(request, 'item/form.html', {
-        'form': form,
-        'title': 'New item',
-    })
 
 @login_required
 def edit(request, pk):
