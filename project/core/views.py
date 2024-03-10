@@ -16,13 +16,20 @@ from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.http import HttpResponse
 
+
+
+
 def index(request):
     items = Item.objects.all()[:6]
     categories = Category.objects.all()
 
+    recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", []))[:3]
+    
+
     return render(request, 'core/index.html', {
         'categories': categories,
         'items': items,
+        'recently_viewed':recently_viewed_qs
     })
 
 def contact(request):

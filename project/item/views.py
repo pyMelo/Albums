@@ -11,6 +11,7 @@ import numpy as np
 from .forms import NewItemForm, EditItemForm, RatingForm
 from .models import Category, Item, Rating
 
+
 def items(request):
     query = request.GET.get('query', '')
     category_id = request.GET.get('category', 0)
@@ -24,7 +25,6 @@ def items(request):
 
     if query:
         items = items.filter(Q(name__icontains=query) | Q(description__icontains=query))
-    print(f'Session Data: {request.session.get("recently_viewed", [])}')
 
     return render(request, 'item/items.html', {
         'items': items,
@@ -41,7 +41,6 @@ def new(request):
         if form.is_valid():
             item = form.save(commit=False)
 
-            # Check if the uploaded image contains a face
             image = request.FILES['image'].read()
             numpy_array = np.frombuffer(image, np.uint8)
             cv_image = cv2.imdecode(numpy_array, cv2.IMREAD_COLOR)
@@ -52,13 +51,12 @@ def new(request):
             )
             faces = face_classifier.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
 
-            if len(faces) > 0:
+            if len(faces) > 0: 
                 message = 'Face detected in the uploaded image. You cannot upload images with faces.'
                 return render(request, 'item/face_detection_warning.html', {
                 'warning_message': message,
                 })
             else:
-                # No faces detected, save the item
                 item.created_by = request.user
                 item.save()
                 return redirect('item:detail', pk=item.id)
@@ -85,16 +83,12 @@ def recently_viewed( request, pk ):
             request.session["recently_viewed"].pop()
     request.session.modified =True
 
-
 def detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
     related_items = Item.objects.filter(category=item.category).exclude(pk=pk)[:3]
     ratings = Rating.objects.filter(item=item)
     
     recently_viewed(request,pk)
-    print(Item.pk)
-    recently_viewed_qs = Item.objects.filter(pk__in=request.session.get("recently_viewed", []))[:3]
-
     if ratings:
         average_rating = round(sum(rating.value for rating in ratings) / len(ratings), 2)
     else:
@@ -102,7 +96,6 @@ def detail(request, pk):
         
     user_rating = Rating.objects.filter(item=item, rated_by=request.user).first()
     
-    print(f'related_items : {related_items}')
     if request.method == 'POST':
         print('Entered in the POST method')
         rating_form=RatingForm(request.POST)
@@ -116,19 +109,13 @@ def detail(request, pk):
     else:
         rating_form = RatingForm()
         form_submitted = False
-        
-    print(f'recently viewed qs {recently_viewed_qs}')
-    print(f'recently_viewed_qs: {recently_viewed_qs}')
-    print(f'request.session["recently_viewed"]: {request.session.get("recently_viewed", [])}')
 
-    
     return render(request, 'item/detail.html', {
         'item': item,
         'related_items': related_items,
         'ratings': ratings,
         'average_rating': average_rating,
         'rating_form': rating_form,
-        'recently_viewed': recently_viewed_qs,
         'user_rating':user_rating,
         'form_submitted': form_submitted,
     })

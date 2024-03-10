@@ -13,7 +13,11 @@
                 <div>
                     <a href="{% url 'item:detail' item.id %}">
                         <div>
-                            <img src="{{ item.image.url }}" class="rounded-t-xl">
+                            {% if request.user.is_authenticated %}
+                                <img src="{{ item.image.url }}" class="rounded-t-xl">
+                            {% else %}
+                                <img src="{{ item.image.url }}" class="rounded-t-xl hidden-blur">
+                            {% endif %}
                         </div>
 
                         <div class="p-6 bg-white rounded-b-xl">
@@ -25,14 +29,21 @@
         </div>
     </div>
 
+    <style>
+        .hidden-blur {
+            filter: blur(10px);
+        }
+        
+    </style>
+
+
+    {% if request.user.is_authenticated %}
+
     <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
         <h2 class="mb-12 text-2xl text-center">Recently Viewed Items</h2>
         
         <div class="grid grid-cols-3 gap-3">
-        <p>Debug: {{ recently_viewed }}</p>
 
-            {% if recently_viewed %}
-                <p>Queryset is not empty </p>
                 {% for item in recently_viewed %}
                     <div>
                         <a href="{% url 'item:detail' item.id %}">
@@ -46,10 +57,8 @@
                         </a>
                     </div>
                 {% endfor %}
-            {% else %}
-                <p>Queryset is empty </p>
-            {% endif %}
         </div>
         
     </div>
+    {% endif %}
 {% endblock %}
