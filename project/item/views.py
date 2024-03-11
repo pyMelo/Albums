@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q,Avg
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib import messages
 
 import cv2
 import numpy as np
