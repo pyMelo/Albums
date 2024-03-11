@@ -83,6 +83,12 @@
                 {% endif %}
 
             {% endif %}
+        {% else %}
+            <!-- Add the delete button for the item -->
+            <form method="post" action="{% url 'item:delete' item.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 mt-2">Delete Item</button>
+            </form>
         {% endif %}
 
     </div>

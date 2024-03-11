@@ -9,16 +9,15 @@ from django.utils.deprecation import MiddlewareMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.conf import settings
+import os
 
 from django.shortcuts import render
 
-BLURRED_HTML_PATH = 'blurred_page'  # Assuming you have a URL pattern named 'blurred_page'
 
 logger = logging.getLogger(__name__)
 
-# Get JWT secret key
 
-SECRET_KEY = '259fabc6e7b379d1babad0eb3b8ed8a14c3ccfed5acf7d93c81f1add36f7626f'
+token_jwt_env = os.getenv('jwt_token')
 
 EXCEPTION_URLS = ['/','/login/','/signup/','/logout/','/password_reset/']
 
@@ -70,7 +69,7 @@ class CustomMiddleware(MiddlewareMixin):
         print('Token do not exists')
         if jwt_token:
             try:
-                payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+                payload = jwt.decode(jwt_token, token_jwt_env, algorithms=['HS256'])
                 username = payload['username']
                 logger.info(f"Request received from user - {username}")
                 return None

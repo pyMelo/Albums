@@ -15,8 +15,9 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
 from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.http import HttpResponse
+import os
 
-
+token_jwt = os.getenv('jwt_token')
 
 
 def index(request):
@@ -78,7 +79,7 @@ def login_view(request):
                 'exp': expiration_time,
             }
             
-            jwt_token = jwt.encode(payload, '259fabc6e7b379d1babad0eb3b8ed8a14c3ccfed5acf7d93c81f1add36f7626f', algorithm='HS256')
+            jwt_token = jwt.encode(payload, token_jwt, algorithm='HS256')
             response = redirect('core:index') 
             response.set_cookie('jwt_token', jwt_token, httponly=True, secure=True)
 
@@ -87,7 +88,6 @@ def login_view(request):
 
         return render(request, template_name, {'form': form})
 def error_response(request, code=200, message='Default message'):
-    template = 'core/blurred_page.html'
 
     if code != 200:
         # If there's an error, render the error response
