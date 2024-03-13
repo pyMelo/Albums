@@ -1,1 +1,2 @@
-# dmihub
+# Albums
+![logo](/images/logo.png)
