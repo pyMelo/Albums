@@ -7,7 +7,7 @@ L'obiettivo di questo progetto e creare una cerchia ristretta e moderata per la 
 Lo sviluppo è stato principalmente fatto in **Django** un framework server-side, con la possibilità di utilizzare i *templates*,
 la parte html che supporta il backend di django, in modo da sviluppare anche la parte client-side.
 
-Si è presa ispirazione per l'html e di una piccola parte di codice (lo sviluppo degli item e del browse) dalla repo : https://github.com/SteinOveHelset/puddle
+Si è presa ispirazione per l'html (parte del browsing) e di una piccola parte di codice (per lo sviluppo della parte frontend e modelli degli item) dalla repo : https://github.com/SteinOveHelset/puddle
 
 # Implementazione del sito
 
