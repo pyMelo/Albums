@@ -60,7 +60,7 @@ Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicati.
 
 # Conclusione
 
-Il progetto è stato sviluppato per un progetto universitario.
+Il progetto è stato sviluppato per principale scopo, didattico, universitario.
 
 Redirect alla relazione :  [Relazione Progetto](Ingegneria_S_D_albums.pdf)
 
