@@ -71,7 +71,7 @@ Il *progetto* django è stato suddiviso in 3 principali *applicazioni* :
 
 In conclusione, il progetto sviluppato rappresenta un’eccitante fusione di
 complessità e semplicità nell’implementazione di un sito web utilizzando il
-framework Django. Attraverso la scelta intuitiva.. [continua a leggere..](Ingegneria_S_D_albums.pdf)
+framework Django. Attraverso la scelta intuitiva.. [continua a leggere..](Relazione_ISD.pdf)
 
 
 
