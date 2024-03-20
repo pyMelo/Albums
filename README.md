@@ -54,7 +54,7 @@ Verreno avvisati con un messaggio di warning
 
 ## Profile
 
-Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicato.
+Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicati.
 
 ![profile](/images/profile.png)
 
@@ -62,4 +62,4 @@ Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicato.
 
 Il progetto è stato sviluppato per un progetto universitario.
 
-Link alla relazione : 
+Download alla relazione :  [Download PDF](Ingegneria_S_D_albums.pdf)
