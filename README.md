@@ -11,3 +11,55 @@ Si è presa ispirazione per l'html e di una piccola parte di codice (lo sviluppo
 
 # Implementazione del sito
 
+Questa è la homepage del sito dove vengono mostrate le immagini piu recenti, e la navigation bar
+
+![homepage](/images/homepage.png)
+
+## Metodo di registrazione 
+
+Sono presente vari campi, tutti obbligatori per registrarsi all'interno della nostra applicazione.
+
+![signup](/images/signup.png)
+
+
+## Immagini Recenti e in Relazione
+
+Le immagini recenti viste dall'utente durante la sua sessione
+
+![recently](/images/recently_viewed.png)
+
+
+Immagini in relazione con l'oggetto visualizzato al momento della stessa categoria
+
+![related](/images/related_items.png)
+
+## Rating
+
+Presente la funzione di rating per ogni post pubblicato nel sito.
+
+![Rating](/images/detailitem_rating.png)
+
+
+## Face Detection
+
+Nel sito non è possibile pubblicare immagini contenente dei volti.
+
+![facedetect](/images/filesystem_facedetection.png)
+
+Verreno avvisati con un messaggio di warning
+
+![warning_face](/images/warning_facedetected.png)
+
+
+
+## Profile
+
+Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicato.
+
+![profile](/images/profile.png)
+
+# Conclusione
+
+Il progetto è stato sviluppato per un progetto universitario.
+
+Link alla relazione : 
