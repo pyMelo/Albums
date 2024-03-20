@@ -62,4 +62,5 @@ Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicati.
 
 Il progetto è stato sviluppato per un progetto universitario.
 
-Download alla relazione :  [Download PDF](Ingegneria_S_D_albums.pdf)
+Redirect alla relazione :  [Relazione Progetto](Ingegneria_S_D_albums.pdf)
+
