@@ -58,9 +58,20 @@ Ogni utente è dotato di una pagina profilo con i suoi scatti pubblicati.
 
 ![profile](/images/profile.png)
 
+## E molto altro..
+
+Nel codice sono state utilizzate varie funzioni, dalla generazione del JWT token alla gestione delle pagine HTML, lo storing delle immagini e molto altro.
+Il *progetto* django è stato suddiviso in 3 principali *applicazioni* :
+- Core
+- Item
+- Visuals
+
+
 # Conclusione
 
-Il progetto è stato sviluppato per principale scopo, didattico, universitario.
+In conclusione, il progetto sviluppato rappresenta un’eccitante fusione di
+complessità e semplicità nell’implementazione di un sito web utilizzando il
+framework Django. Attraverso la scelta intuitiva.. [continua a leggere..](Ingegneria_S_D_albums.pdf)
 
-Redirect alla relazione :  [Relazione Progetto](Ingegneria_S_D_albums.pdf)
+
 
