@@ -1,5 +1,7 @@
 # Albums : Sharing Photo's website
-![logo](/images/logo.png)
+<p align='center'>
+  <img src='./images/logo.png'>
+</p>
 
 Albums è un sito web per la pubblicazione di immagini valutate dall'utenza.
 
